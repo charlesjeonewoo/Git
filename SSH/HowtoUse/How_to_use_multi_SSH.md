@@ -68,13 +68,16 @@ password까지 모두 완료하고 나면 다음과 같이 SSH 생성이 완료 
 
 _SSH 추가하기_
 
-Github에 로그인 후 아래 그림의 상단 메뉴에서 _Setting_을 선택한다.  
-![] (https://github.com/charlesjeonewoo/Git/blob/master/Resouce/Add_SSH_1.png)
+Github에 로그인 후 아래 그림의 상단 메뉴에서 _Setting_을 선택한다.    
+
+![image1] (https://github.com/charlesjeonewoo/Git/blob/master/Resouce/Add_SSH_1.png)
 
 왼쪽 상단 메뉴에서 _SSH and GPG keys_를 선택한다.  
+
 ![] (https://github.com/charlesjeonewoo/Git/blob/master/Resouce/Add_SSH_2.png)
 
 New SSH key를 눌러 생성한 SSH를 추가한다.  
+
 ![] (https://github.com/charlesjeonewoo/Git/blob/master/Resouce/Add_SSH_3.png)
 
 
