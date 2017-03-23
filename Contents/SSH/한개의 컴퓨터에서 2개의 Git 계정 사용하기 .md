@@ -1,15 +1,16 @@
 
 ## [ 한개의 컴퓨터에서 2개의 Git 계정 사용하기 ( SSH )]
 
-GIt에 자료를 Push, Clone, Pull을 할 때 URL과 SSH를 사용할 수 있다. 나는 SSH를 몰랐기 때문에 URL을 사용하였다. 하지만 지금은 SSH를 이용한다.
-SSH를 이용하여 1개의 계정만 사용할 때는 Push, Clone 등을 할 때 전혀 문제가 되지 않았다. 하지만 2개의 계정을 사용할 때 Error가 발생했다. Permission관련 Error로 '이 계정에 다른 계정 ID로 접근할 수 없다'는 내용이었다. 
+GIt에 자료를 Push, Clone, Pull을 할 때 URL과 SSH를 사용할 수 있다. 나는 SSH와 URL방식 중 SSH를 사용하였다. 
+SSH를 이용하여 1개의 계정만 사용할 때는 Push, Clone 등을 할 때 전혀 문제가 되지 않았다. 하지만 2개의 계정을 사용할 때 Error가 발생했다. 
 
-나는 이 Error를 해결하기 위해 여러가지를 해보았다. 
-아래는 내가 그 동안 해 보았던 내용을 SSH와 URL로 나누어서 정리하였다.
+	ERROR: Permission to charlesjeonewoo/Git.git denied to b08company.  
+	fatal: Could not read from remote repository.
+	
+	Please make sure you have the correct access rights and the repository exists.
 
+Permission관련 Error로 '이 계정에 다른 계정 ID로 접근할 수 없다'는 내용이었다. 
 
----
-### SSH
 
 ***계정 ID 맞추기***  
 
@@ -18,9 +19,9 @@ SSH를 이용하여 1개의 계정만 사용할 때는 Push, Clone 등을 할 �
 	git config --global user.name "Username"  
 	git config --global user.email "UserEmail Address"
 
-하지만 다음과 같은 Error가 발생하였다.
+하지만 같은 Error가 발생하였다.
 
-	ERROR: Permission to "Username"/"Repository".git denied to "Other Username".  
+	ERROR: Permission to charlesjeonewoo/Git.git denied to b08company.  
 	fatal: Could not read from remote repository.
 	
 	Please make sure you have the correct access rights and the repository exists.
@@ -37,7 +38,7 @@ Github에 SSH를 추가 하기 위해서는 먼저 PC에서 SSH를 만들어야 
 
 	ssh-keygen -t rsa -C "User email"
 
-그리고 다음과 같이 Directory, password를 입력하도록 나온다. 
+그러면 다음과 같이 Directory, password를 입력하도록 나온다. 
 
 	Generating public/private rsa key pair.
 	Enter file in which to save the key (/Users/GANDIS/.ssh/id_rsa): 
@@ -80,6 +81,78 @@ New SSH key를 눌러 생성한 SSH를 추가한다.
 
 ![](https://github.com/charlesjeonewoo/Git/blob/master/Resouce/Add_SSH_3.png)
 
+Github에 SSH까지 추가를 하고 다시 Push를 시도해보았다. 하지만
+
+	ERROR: Permission to charlesjeonewoo/Git.git denied to b08company.  
+	fatal: Could not read from remote repository.
+	
+	Please make sure you have the correct access rights and the repository exists.
+
+똑같은 Error가 발생하였다. Google 검색결과 
+
+	ssh-add ~/.ssh/b08company
+
+로 사용하고자 하는 public SSH를 추가하라는 것 같다. 결과는 성공!
+
+하지만 다른 아이디인 charlesewoojeon로 push를 하려고 하니 이번에는 반대로 
+
+	ERROR: Permission to b08compnay/RevengiDidt.git denied to charlesjeonewoo.  
+	fatal: Could not read from remote repository.
+	
+	Please make sure you have the correct access rights and the repository exists.
+
+Error가 발생했다. 그래서 Google 검색 결과 대로 
+ 
+	ssh-add ~/.ssh/charlesjeonewoo
+
+으로 해당 사용자의 public SSH를 추가했다. 결과는 
+
+	ERROR: Permission to b08compnay/RevengiDidt.git denied to charlesjeonewoo.  
+	fatal: Could not read from remote repository.
+	
+	Please make sure you have the correct access rights and the repository exists.
+
+실패! 이유는 모르겠다.
+
+	ssh-add -l
+
+위의 명령어 입력 결과 두 계정의 public SSH가 모두 추가 되었다. 
+
+	ssh-add -D
+	ssh-add ~/.ssh/charlesjeonewoo
+
+추가된 SSH를 모두 지우고 다시 추가를 해보았다. 
+결과는 성공이었다. 
+매번 이렇게 모두 지우고 다시 추가를 반복해야 된다. Google 검색을 다시 했다.
+아래와 같이 .ssh/config 파일을 수정하고, remote할 SSH를 바꾸어 주면 되었다.
+
+	vi ~/.ssh/config
+
+를 입력해 config 파일을 연다. 그리고 다음과 같이 수정한다.
+
+	# b08company Account
+	# Email : b08company@naver.com
+
+	Host github.com-b08company
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/b08company
+
+
+	# charlesjeonewoo Account
+	# Email : charlesjeon.ewoo@gmail.com
+
+	Host github.com-charlesjeonewoo
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/charlesjeonewoo
+
+config 파일 수정이 완료 되면 GitHub에서 제공하는 SSH주소를 다음과 같이 변경하여 remote한다.
+
+	git@github.com:charlesjeonewoo/Git.git  // 기존주소
+    git@github.com-charlesjeonewoo:charlesjeonewoo/Git.git  // 변경주소
+
+그리고 나면 두 계정의 SSH를 등록했다 지원다 하지 않고, 자유롭게 push를 할 수 있다. 
 
 ---
 ### URL
@@ -89,6 +162,4 @@ URL을 사용하면 SSH와 달리 Github에 SSH를 등록할 필요가 없다. �
 	Username for 'https://github.com': charlesjeon.ewoo@gmail.com
 	Password for 'https://charlesjeon.ewoo@gmail.com@github.com':
 
-___
 
-SSH를 사용하는 이유와 장점은 모르겠다. 확인해보고 이부분에 대해서 update할 예정이다.
