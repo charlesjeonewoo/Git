@@ -101,7 +101,7 @@ Github에 SSH까지 추가를 하고 다시 Push를 시도해보았다. 하지�
 	
 	Please make sure you have the correct access rights and the repository exists.
 
-Error가 발생했다. 그래서 Google 검색 결과 대로 
+Error가 발생했다. 그래서 아까와 같이 
  
 	ssh-add ~/.ssh/charlesjeonewoo
 
@@ -116,19 +116,20 @@ Error가 발생했다. 그래서 Google 검색 결과 대로
 
 	ssh-add -l
 
-위의 명령어 입력 결과 두 계정의 public SSH가 모두 추가 되었다. 
+위의 명령어 입력 결과 두 계정의 public SSH가 모두 추가 되어 있었다. 
+추가된 SSH를 모두 지우고 다시 추가를 해보았다. 
 
 	ssh-add -D
 	ssh-add ~/.ssh/charlesjeonewoo
 
-추가된 SSH를 모두 지우고 다시 추가를 해보았다. 
 결과는 성공이었다. 
-매번 이렇게 모두 지우고 다시 추가를 반복해야 된다. Google 검색을 다시 했다.
+매번 이렇게 모두 지우고 다시 추가를 반복해야 된다. 
+Google 검색을 다시 했다.
 아래와 같이 .ssh/config 파일을 수정하고, remote할 SSH를 바꾸어 주면 되었다.
 
 	vi ~/.ssh/config
 
-를 입력해 config 파일을 연다. 그리고 다음과 같이 수정한다.
+를 입력해 config 파일을 연다. 그리고 다음과 같이 수정하였다.
 
 	# b08company Account
 	# Email : b08company@naver.com
@@ -147,7 +148,7 @@ Error가 발생했다. 그래서 Google 검색 결과 대로
         User git
         IdentityFile ~/.ssh/charlesjeonewoo
 
-config 파일 수정이 완료 되면 GitHub에서 제공하는 SSH주소를 다음과 같이 변경하여 remote한다.
+config 파일 수정 완료 후, GitHub에서 제공하는 SSH주소를 다음과 같이 변경하여 remote한다.
 
 	git@github.com:charlesjeonewoo/Git.git  // 기존주소
     git@github.com-charlesjeonewoo:charlesjeonewoo/Git.git  // 변경주소
